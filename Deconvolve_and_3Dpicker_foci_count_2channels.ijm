@@ -1,9 +1,9 @@
 // ImageJ macro to batch remove out of nucleus intensities based on DAPI mask
 // then deconvolve images using theoretical PSF
 // then find foci using 3D Picker
-// requires Coloc2 and Iterative 3D deconvolution plugins
+// requires Iterative 3D deconvolution and 3D Picker plugins
 // requires the PFS files to be located in the root folder an
-// select 2 directory for output
+
 
 //########################
 macro "Batch Coloc" 
@@ -14,14 +14,9 @@ macro "Batch Coloc"
 	// read in file listing from source directory
 	list = getFileList(dir1);
 	
-	// call the sort function and sort the list
-	//sort(list);
-	
-	// loop over the files in the source directory
-	
 	setBatchMode(true);
 	
-	// initialisation
+	// loop over the files in the source directory
 	for (i=0; i<list.length; i++)
 		{
 		if (endsWith(list[i], ".tif"))
@@ -45,13 +40,9 @@ macro "Batch Coloc"
 			run("Convert to Mask", "method=Otsu background=Dark calculate black");
 			run("Options...", "iterations=1 count=1 black do=[Fill Holes] stack");
 			run("Options...", "iterations=3 count=1 black do=Dilate stack");
-			
-			
-			
+		
 			run("Analyze Particles...", "size=15.00-Infinity display exclude clear summarize add stack");
-			
 			selectWindow("Results");
-			
 			run("Close");
 						
 			
@@ -61,7 +52,7 @@ macro "Batch Coloc"
 				for (j = 0; j < n; j++){
 					Stack.setSlice(j);
 					roiManager("select",j); 
-					//roiManager("Delete");
+					
 					run("Clear Outside", "slice");
 					run("Divide...", "value=255.000 slice");
 					
@@ -101,17 +92,13 @@ macro "Batch Coloc"
 			
 			imageCalculator("Multiply create stack", "PCNA_dec","DAPI");
 			rename("PCNA_dec_remove");
-			
-			
-			
-			
+
 			
 			// Foci counting green
 			selectWindow("EdU_dec_remove");
 			run("Foci Picker3D", "image=[EdU_dec_remove] background=automatic uniform=1500 automatic=6 minitype=RelativetoMaximum minisetting=0.50 tolerancesetting=20 minimum=8 voxelx=1.000 voxely=1.000 voxelz=1.000 contrast=0 useztolerance=No ztolerance=5 useshapevalidation=No focishaper=6 computingthread=1");
+			
 			// save images and results
-			
-			
 			selectWindow("Results");
 			n=nResults;
 			saveAs("Text", dir2 + imagename + "_" + n +"-EdU_foci.csv");
