@@ -1,7 +1,7 @@
 // ImageJ macro to batch remove out of nucleus intensities based on DAPI mask
 // then deconvolve images using theoretical PSF
-// then find foci using 3D Picker
-// requires Iterative 3D deconvolution and 3D Picker plugins
+// then find foci using Iterative Deconvolve 3D
+// requires Iterative Deconvolve 3D and FociPicker3D plugins
 // requires the PFS files to be located in the root folder an
 
 
